@@ -1,0 +1,57 @@
+# openenv.yaml — Environment manifest
+
+name: feed-ranking
+version: "1.0.0"
+description: >
+  A social media feed ranking environment where AI agents learn to
+  personalize content feeds. Agents must balance user engagement (NDCG),
+  content quality, and platform policies across three difficulty levels.
+  Features Bayesian-inspired user simulation with hidden preference weights,
+  multiple user archetypes, and realistic platform constraints.
+
+author: DevanshuDon
+repository: https://huggingface.co/spaces/DevanshuDon/feed-ranking
+
+tasks:
+  - name: easy
+    description: >
+      Rank 15 candidate posts for a single user with explicit preferences.
+      User states their interests and dislikes. Score = NDCG@10.
+    difficulty: easy
+    max_score: 1.0
+    action_schema:
+      ranked_post_ids: "list of 10 post IDs in ranked order (best first)"
+
+  - name: medium
+    description: >
+      Rank 25 candidate posts for a single user with NO stated preferences.
+      Agent must infer interests from engagement history. Score = NDCG@10.
+    difficulty: medium
+    max_score: 1.0
+    action_schema:
+      ranked_post_ids: "list of 10 post IDs in ranked order (best first)"
+
+  - name: hard
+    description: >
+      Rank 20 posts for 3 different user archetypes sequentially while
+      satisfying platform policies (topic diversity, author spread,
+      new creator inclusion, clickbait limits).
+      Score = 0.6 * avg_NDCG + 0.4 * policy_compliance.
+    difficulty: hard
+    max_score: 1.0
+    action_schema:
+      ranked_post_ids: "list of 10 post IDs in ranked order (best first)"
+
+endpoints:
+  reset: POST /reset
+  step: POST /step
+  state: GET /state
+  tasks: GET /tasks
+  grader: GET /grader
+  baseline: GET /baseline
+  health: GET /health
+
+environment:
+  python_version: "3.9"
+  framework: fastapi
+  deployment: huggingface_spaces
